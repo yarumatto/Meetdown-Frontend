@@ -1,0 +1,9 @@
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.list-header h1 { font-size: 24px; font-weight: 700; }
+.search-bar { width: 100%; margin-bottom: 20px; }
+.events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.event-card { transition: box-shadow .2s; }
+.event-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.15); }
+.loading-wrap { display: flex; justify-content: center; padding: 60px; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 24px; }
+.empty { text-align: center; color: #888; padding: 40px; }

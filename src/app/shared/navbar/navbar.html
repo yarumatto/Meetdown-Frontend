@@ -1,0 +1,19 @@
+<mat-toolbar color="primary" class="navbar">
+  <a routerLink="/events" class="navbar-brand">🗓️ Meetup</a>
+  <span class="spacer"></span>
+
+  <button mat-button routerLink="/events">Événements</button>
+
+  <ng-container *ngIf="currentUser; else notLogged">
+    <button mat-button routerLink="/events/new">+ Créer</button>
+    <span class="user-name">{{ currentUser.username }}</span>
+    <button mat-icon-button (click)="logout()" title="Se déconnecter">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </ng-container>
+
+  <ng-template #notLogged>
+    <button mat-button routerLink="/auth/login">Se connecter</button>
+    <button mat-raised-button routerLink="/auth/register">S'inscrire</button>
+  </ng-template>
+</mat-toolbar>

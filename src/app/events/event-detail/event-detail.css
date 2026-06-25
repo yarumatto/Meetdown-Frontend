@@ -1,0 +1,27 @@
+.loading-wrap { display: flex; justify-content: center; padding: 80px; }
+.detail-wrap { max-width: 800px; margin: 0 auto; }
+.detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.organizer-actions { display: flex; gap: 8px; }
+.detail-card { padding: 8px; }
+.detail-title { font-size: 22px !important; font-weight: 700 !important; margin-bottom: 6px !important; }
+.detail-meta { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.meta-item { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #444; }
+.meta-item mat-icon { color: #6366f1; font-size: 20px; width: 20px; height: 20px; }
+.status-chip { margin: 12px 0; }
+.description h3 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; }
+.description p { line-height: 1.7; color: #555; white-space: pre-wrap; }
+.full-badge { color: #ef4444; font-weight: 500; padding: 0 8px; }
+
+.participants-card { margin-bottom: 16px; }
+.participants-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.participants-table th { text-align: left; padding: 8px 12px; border-bottom: 2px solid #e2e8f0; font-weight: 600; color: #475569; }
+.participants-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; }
+.participants-table tr:hover td { background: #f8fafc; }
+.reviews-section { margin-top: 24px; }
+.reviews-section h3 { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
+.review-item { margin-bottom: 10px; }
+.review-stars { display: flex; gap: 2px; margin-top: 4px; }
+.small-star { font-size: 16px; width: 16px; height: 16px; color: #d1d5db; }
+.small-star.filled { color: #f59e0b; }
+.review-content { color: #555; line-height: 1.6; margin-top: 8px; }
+.no-reviews { text-align: center; color: #94a3b8; padding: 20px; }

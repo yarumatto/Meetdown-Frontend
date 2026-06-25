@@ -1,0 +1,159 @@
+<div *ngIf="loading" class="loading-wrap">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!loading && event" class="detail-wrap">
+
+  <div class="detail-header">
+    <button mat-button routerLink="/events">
+      <mat-icon>arrow_back</mat-icon> Retour
+    </button>
+    <div class="organizer-actions" *ngIf="isOrganizer">
+      <button mat-stroked-button (click)="toggleParticipants()">
+        <mat-icon>people</mat-icon>
+        {{ showParticipants ? 'Masquer' : 'Voir les participants' }}
+        ({{ event.attendeeCount }})
+      </button>
+      <button mat-stroked-button [routerLink]="['/events', event.id, 'edit']">
+        <mat-icon>edit</mat-icon> Modifier
+      </button>
+      <button mat-stroked-button color="warn" (click)="delete()">
+        <mat-icon>delete</mat-icon> Supprimer
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="participants-card" *ngIf="isOrganizer && showParticipants">
+    <mat-card-header>
+      <mat-card-title>Participants inscrits</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="loadingParticipants" class="loading-wrap">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+      <div *ngIf="!loadingParticipants">
+        <p *ngIf="participants.length === 0" class="empty">
+          Aucun participant inscrit pour le moment.
+        </p>
+        <table *ngIf="participants.length > 0" class="participants-table">
+          <thead>
+            <tr>
+              <th>Nom d'utilisateur</th>
+              <th>Inscrit le</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of participants">
+              <td>{{ p.username }}</td>
+              <td>{{ p.registeredAt | date:'dd MMM yyyy, HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="detail-card">
+    <mat-card-header>
+      <mat-card-title class="detail-title">{{ event.title }}</mat-card-title>
+      <mat-card-subtitle>
+        Organisé par <strong>{{ event.organizerUsername }}</strong>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="detail-meta">
+        <div class="meta-item">
+          <mat-icon>calendar_today</mat-icon>
+          <span>{{ event.eventDate | date:'EEEE dd MMMM yyyy, HH:mm' }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>location_on</mat-icon>
+          <span>{{ event.location }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>group</mat-icon>
+          <span>
+            {{ event.attendeeCount }} participant(s)
+            <span *ngIf="event.maxAttendees > 0"> / {{ event.maxAttendees }} max</span>
+          </span>
+        </div>
+        <div class="meta-item" *ngIf="event.categoryName">
+          <mat-icon>label</mat-icon>
+          <span>{{ event.categoryName }}</span>
+        </div>
+      </div>
+
+      <mat-chip-set class="status-chip">
+        <mat-chip [color]="event.status === 'OPEN' ? 'primary' : 'warn'" selected>
+          {{ event.status }}
+        </mat-chip>
+        <mat-chip *ngIf="event.full" color="warn" selected>COMPLET</mat-chip>
+      </mat-chip-set>
+
+      <div class="description" *ngIf="event.description">
+        <h3>Description</h3>
+        <p>{{ event.description }}</p>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions *ngIf="auth.isLoggedIn && !isOrganizer">
+      <button mat-raised-button color="primary"
+              *ngIf="!isRegistered && !event.full && event.status === 'OPEN'"
+              (click)="register()" [disabled]="actionLoading">
+        <mat-spinner *ngIf="actionLoading" diameter="18" style="display:inline-block"></mat-spinner>
+        S'inscrire à cet événement
+      </button>
+      <button mat-stroked-button color="warn"
+              *ngIf="isRegistered"
+              (click)="unregister()" [disabled]="actionLoading">
+        Se désinscrire
+      </button>
+      <span *ngIf="event.full && !isRegistered" class="full-badge">
+        Événement complet
+      </span>
+    </mat-card-actions>
+
+    <mat-card-actions *ngIf="!auth.isLoggedIn">
+      <p>
+        <a routerLink="/auth/login">Connectez-vous</a> pour vous inscrire.
+      </p>
+    </mat-card-actions>
+  </mat-card>
+
+  <ng-container *ngIf="isPastEvent">
+
+    <app-review-form
+      *ngIf="auth.isLoggedIn && !isOrganizer"
+      [eventId]="event.id"
+      [existingReview]="myReview"
+      (reviewPosted)="onReviewPosted($event)"
+      (reviewDeleted)="onReviewDeleted()">
+    </app-review-form>
+
+    <div class="reviews-section" *ngIf="reviews.length > 0">
+      <h3>Avis des participants</h3>
+      <mat-card class="review-item" *ngFor="let r of reviews">
+        <mat-card-header>
+          <mat-card-title style="font-size:14px">{{ r.username }}</mat-card-title>
+          <mat-card-subtitle>{{ r.createdAt | date:'dd MMM yyyy' }}</mat-card-subtitle>
+          <div class="review-stars">
+            <mat-icon *ngFor="let s of [1,2,3,4,5]" class="small-star"
+                      [class.filled]="s <= r.rating">
+              {{ s <= r.rating ? 'star' : 'star_border' }}
+            </mat-icon>
+          </div>
+        </mat-card-header>
+        <mat-card-content *ngIf="r.content">
+          <p class="review-content">{{ r.content }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="reviews.length === 0" class="no-reviews">
+      <p>Aucun avis pour le moment.</p>
+    </div>
+
+  </ng-container>
+
+</div>

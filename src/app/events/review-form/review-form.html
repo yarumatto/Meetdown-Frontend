@@ -1,0 +1,48 @@
+<mat-card class="review-card">
+  <mat-card-header>
+    <mat-card-title>
+      {{ existingReview ? 'Votre avis' : 'Laisser un avis' }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <!-- Étoiles -->
+      <div class="stars-row">
+        <mat-icon
+          *ngFor="let star of stars"
+          class="star"
+          [class.filled]="star <= (hoveredStar || form.value.rating)"
+          (mouseenter)="hoveredStar = star"
+          (mouseleave)="hoveredStar = 0"
+          (click)="setRating(star)">
+          {{ star <= (hoveredStar || form.value.rating) ? 'star' : 'star_border' }}
+        </mat-icon>
+        <span class="rating-label">
+          {{ form.value.rating > 0 ? form.value.rating + ' / 5' : 'Choisir une note' }}
+        </span>
+      </div>
+
+      <!-- Commentaire optionnel -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Commentaire (optionnel)</mat-label>
+        <textarea matInput formControlName="content" rows="3"
+                  placeholder="Décrivez votre expérience..."></textarea>
+        <mat-hint align="end">
+          {{ form.get('content')?.value?.length || 0 }}/1000
+        </mat-hint>
+      </mat-form-field>
+
+      <div class="review-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          {{ existingReview ? 'Modifier' : 'Publier mon avis' }}
+        </button>
+        <button mat-stroked-button color="warn" type="button"
+                *ngIf="existingReview" (click)="delete()">
+          Supprimer
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

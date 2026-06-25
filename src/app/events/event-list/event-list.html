@@ -1,0 +1,54 @@
+<div>
+  <!-- En-tête -->
+  <div class="list-header">
+    <h1>Événements à venir</h1>
+    <a routerLink="/events/new" mat-raised-button color="primary">+ Créer un événement</a>
+  </div>
+
+  <!-- Recherche -->
+  <mat-form-field appearance="outline" class="search-bar">
+    <mat-label>Rechercher...</mat-label>
+    <input matInput [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Paris, Tech, Yoga...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <!-- Spinner -->
+  <div *ngIf="loading" class="loading-wrap">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Grille d'events -->
+  <div class="events-grid" *ngIf="!loading">
+    <mat-card *ngFor="let e of events" class="event-card">
+      <mat-card-header>
+        <mat-card-title>{{ e.title }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ e.eventDate | date:'dd MMM yyyy, HH:mm' }}
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>📍 {{ e.location }}</p>
+        <p>👥 {{ e.attendeeCount }}<span *ngIf="e.maxAttendees"> / {{ e.maxAttendees }}</span> participants</p>
+        <p *ngIf="e.categoryName">🏷️ {{ e.categoryName }}</p>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button [routerLink]="['/events', e.id]">Voir les détails →</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <p *ngIf="events.length === 0" class="empty">Aucun événement trouvé.</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 1">
+    <button mat-icon-button (click)="goTo(currentPage-1)" [disabled]="currentPage===0">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span>Page {{ currentPage+1 }} / {{ totalPages }}</span>
+    <button mat-icon-button (click)="goTo(currentPage+1)" [disabled]="currentPage===totalPages-1">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,88 @@
+<!-- src/app/events/event-form/event-form.html -->
+<div class="form-wrap">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        {{ isEditMode ? 'Modifier l\'événement' : 'Créer un événement' }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <!-- Titre -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Titre *</mat-label>
+          <input matInput formControlName="title" placeholder="Ex : Meetup Angular Paris">
+          <mat-error *ngIf="err('title','required')">Titre obligatoire</mat-error>
+          <mat-error *ngIf="err('title','minlength')">5 caractères minimum</mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"
+                    placeholder="Décrivez votre événement..."></textarea>
+          <mat-hint align="end">{{ form.get('description')?.value?.length || 0 }}/2000</mat-hint>
+        </mat-form-field>
+
+        <!-- Lieu -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Lieu *</mat-label>
+          <input matInput formControlName="location" placeholder="Ex : Paris 9ème, Salle XX">
+          <mat-icon matSuffix>location_on</mat-icon>
+          <mat-error *ngIf="err('location','required')">Lieu obligatoire</mat-error>
+        </mat-form-field>
+
+        <!-- Date + Heure -->
+        <div class="date-row">
+          <mat-form-field appearance="outline" class="date-field">
+            <mat-label>Date *</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="eventDate"
+                   [min]="today" placeholder="JJ/MM/AAAA">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="err('eventDate','required')">Date obligatoire</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="time-field">
+            <mat-label>Heure *</mat-label>
+            <input matInput type="time" formControlName="eventTime">
+            <mat-error *ngIf="err('eventTime','required')">Heure obligatoire</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Capacité -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Nombre max de participants</mat-label>
+          <input matInput type="number" formControlName="maxAttendees" min="0">
+          <mat-hint>0 = illimité</mat-hint>
+          <mat-error *ngIf="err('maxAttendees','min')">Doit être positif</mat-error>
+        </mat-form-field>
+
+        <!-- Catégorie -->
+        <mat-form-field appearance="outline" class="full" *ngIf="categories.length > 0">
+          <mat-label>Catégorie</mat-label>
+          <mat-select formControlName="categoryId">
+            <mat-option [value]="null">— Aucune —</mat-option>
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">
+              {{ cat.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/events">Annuler</button>
+          <button mat-raised-button color="primary" type="submit"
+                  [disabled]="form.invalid || loading">
+            <mat-spinner *ngIf="loading" diameter="18"
+                         style="display:inline-block;margin-right:6px"></mat-spinner>
+            {{ isEditMode ? 'Sauvegarder' : 'Créer l\'événement' }}
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
